@@ -1,6 +1,6 @@
 # ADMET Drug Report Generator
 
-A Nextflow pipeline that fetches FDA-approved small molecules from ChEMBL, predicts
+A Nextflow pipeline that fetches FDA approved small molecules from ChEMBL, predicts
 ADMET properties with ADMET-AI, and uses Google Gemini to narrate each compound's
 pharmacokinetic and toxicity profile into a structured HTML report.
 
@@ -11,7 +11,7 @@ pharmacokinetic and toxicity profile into a structured HTML report.
 Drug discovery is expensive, slow, and fails at an extraordinary rate. Of the
 thousands of compounds that enter preclinical development each year, fewer than
 10% will ever reach patients. The leading cause of attrition is not lack of
-potency — it is **ADMET failure**: poor Absorption, Distribution, Metabolism,
+potency, it is **ADMET failure**: poor Absorption, Distribution, Metabolism,
 Excretion, and Toxicity profiles that only become apparent late in development,
 when the cost of failure is highest.
 
@@ -21,11 +21,11 @@ useless as a drug because it is not absorbed orally, is rapidly metabolised by
 CYP3A4, accumulates in the brain unexpectedly, or blocks the hERG cardiac
 channel at therapeutic concentrations. Historically, roughly **90% of drug
 candidates that enter clinical trials fail**, and ADMET-related issues account
-for a substantial share of those failures — a proportion that remains stubbornly
+for a substantial share of those failures, a proportion that remains stubbornly
 high despite decades of medicinal chemistry knowledge.
 
 Computational prediction of ADMET properties has matured considerably with the
-advent of large curated datasets (ChEMBL, TDC) and graph-neural-network models
+advent of large curated datasets (ChEMBL, TDC) and graph neural network models
 trained on them. Tools like ADMET-AI can now return probability scores for
 human intestinal absorption, BBB penetration, CYP3A4 substrate likelihood,
 hERG inhibition, and drug-induced liver injury within seconds of receiving a
@@ -37,28 +37,28 @@ rapid triage across a large compound set.
 
 ## Research Question
 
-> Can LLM narration of ML-predicted ADMET properties produce human-readable risk
+> Can LLM narration of ML predicted ADMET properties produce human-readable risk
 > memos that surface actionable insights beyond what raw probability scores
 > communicate on their own?
 
 This project tests whether prompting Gemini 1.5 Flash with a compound's ADMET
-scores — framed as a structured medicinal-chemistry briefing — yields coherent,
-accurate, and clinically relevant drug-candidate assessments at scale, without
-any fine-tuning or retrieval augmentation.
+scores, framed as a structured medicinal-chemistry briefing, yields coherent,
+accurate, and clinically relevant drug candidate assessments at scale, without
+any fine tuning or retrieval augmentation.
 
 ---
 
 ## Methods
 
 ### 1. Data Fetch (`bin/fetch.py`)
-Queries the ChEMBL REST API via `chembl-webresource-client` for 50 FDA-approved
+Queries the ChEMBL REST API via `chembl-webresource-client` for 50 FDA approved
 small molecule drugs (`max_phase=4`, `molecule_type=Small molecule`). Retrieves
 ChEMBL ID, preferred name, canonical SMILES, molecular weight, and AlogP.
 Compounds with missing SMILES are filtered out. Output: `data/compounds.csv`.
 
 ### 2. RDKit Featurization (`bin/featurize.py`)
 For each SMILES string, computes:
-- **Morgan fingerprint** (radius 2, 1024 bits) — stored as flat binary columns `fp_0`…`fp_1023`
+- **Morgan fingerprint** (radius 2, 1024 bits), stored as flat binary columns `fp_0`…`fp_1023`
 - **Physicochemical descriptors**: molecular weight, logP, TPSA, rotatable bonds, H-bond donors/acceptors
 - **Lipinski Rule of Five** pass/fail flag
 
@@ -78,7 +78,7 @@ endpoints relevant to oral drug development:
 | `DILI` | Classification | Drug-induced liver injury risk |
 | `Caco2_Wang` | Regression (log cm/s) | Caco-2 cell permeability |
 
-Failed predictions fall back to per-molecule mode; remaining failures are stored
+Failed predictions fall back to per molecule mode; remaining failures are stored
 as `NaN`. Output: `data/compounds_admet.csv`.
 
 ### 4. Gemini Narration (`bin/narrate.py`)
@@ -97,14 +97,14 @@ Generates `output/report.html` using Plotly and Jinja2:
   (rewards HIA and Caco-2 permeability; penalises hERG, DILI, CYP3A4 liability)
 - **Per-compound card** containing:
   - A Plotly radar chart of the six normalised ADMET dimensions
-  - A colour-coded risk table (green / yellow / red per property)
+  - A colour coded risk table (green / yellow / red per property)
   - The Gemini memo in a styled blockquote
 
 ---
 
 ## Key Finding
 
-Across 50 FDA-approved small molecules from ChEMBL, ADMET-AI predictions revealed a clear trade-off between absorption and toxicity profiles. Top-ranked compounds (mechlorethamine score 0.882, nicotine 0.868, amphetamine 0.840) achieved high scores primarily through excellent human intestinal absorption (HIA > 0.99) and low hERG cardiotoxicity, while bottom-ranked compounds (epirubicin 0.325, sirolimus 0.371) were penalized by simultaneous high hERG (0.875) and DILI (0.842) risk. Notably, beta-blockers as a drug class showed a consistent pattern: high HIA but elevated hERG scores (metoprolol 0.581, betaxolol 0.832, propranolol 0.783), reflecting their known mechanism of cardiac ion channel interaction. The BBB endpoint returned N/A for all 50 compounds, suggesting the ADMET-AI model's BBB classifier was outside its training domain for this compound set — a limitation worth noting. The Gemini narration step was implemented in the pipeline but requires a paid API tier for batch processing of 50 compounds; the pipeline architecture supports it and can be activated with a valid key.
+Across 50 FDA approved small molecules from ChEMBL, ADMET-AI predictions revealed a clear trade off between absorption and toxicity profiles. Top ranked compounds (mechlorethamine score 0.882, nicotine 0.868, amphetamine 0.840) achieved high scores primarily through excellent human intestinal absorption (HIA > 0.99) and low hERG cardiotoxicity, while bottom-ranked compounds (epirubicin 0.325, sirolimus 0.371) were penalized by simultaneous high hERG (0.875) and DILI (0.842) risk. Notably, beta-blockers as a drug class showed a consistent pattern: high HIA but elevated hERG scores (metoprolol 0.581, betaxolol 0.832, propranolol 0.783), reflecting their known mechanism of cardiac ion channel interaction. The BBB endpoint returned N/A for all 50 compounds, suggesting the ADMET-AI model's BBB classifier was outside its training domain for this compound set, a limitation worth noting. The Gemini narration step was implemented in the pipeline but requires a paid API tier for batch processing of 50 compounds; the pipeline architecture supports it and can be activated with a valid key.
 
 ---
 
@@ -201,7 +201,7 @@ admet-report-generator/
 
 **Gemini API free tier is sufficient.** The narration step makes one API call per
 compound (50 calls for the default run). The Gemini 1.5 Flash free tier allows
-15 requests per minute and 1,500 requests per day — well within the requirements
+15 requests per minute and 1,500 requests per day, well within the requirements
 of this pipeline. No billing account is needed. Get a key at
 [aistudio.google.com](https://aistudio.google.com).
 
