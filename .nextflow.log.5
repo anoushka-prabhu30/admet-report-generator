@@ -1,0 +1,159 @@
+May-27 17:39:05.327 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf
+May-27 17:39:05.394 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 26.04.2
+May-27 17:39:05.460 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/anoush/.nextflow/plugins; core-plugins: nf-amazon@3.9.1,nf-azure@1.22.4,nf-cloudcache@0.6.0,nf-codecommit@0.5.2,nf-console@1.3.0,nf-google@1.27.2,nf-k8s@1.5.3,nf-seqera@0.20.0,nf-tower@1.27.0,nf-wave@1.20.0
+May-27 17:39:05.487 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+May-27 17:39:05.488 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+May-27 17:39:05.491 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.14.1 in 'deployment' mode
+May-27 17:39:05.523 [main] DEBUG nextflow.util.RetryConfig - Missing nextflow session - using default retry config
+May-27 17:39:05.751 [main] DEBUG nextflow.plugin.PluginUpdater - Using plugin repository: HttpPluginRepository [registry]; url=https://registry.nextflow.io/api
+May-27 17:39:05.760 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+May-27 17:39:05.801 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/anoush/admet-report-generator/nextflow.config
+May-27 17:39:05.805 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/anoush/admet-report-generator/nextflow.config
+May-27 17:39:05.810 [main] DEBUG nextflow.config.ConfigParserFactory - Using config parser v2
+May-27 17:39:05.826 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+May-27 17:39:06.150 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+May-27 17:39:06.150 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+May-27 17:39:06.169 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/anoush/.nextflow/secrets/store.json
+May-27 17:39:06.172 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@4613311f] - activable => nextflow.secret.LocalSecretsProvider@4613311f
+May-27 17:39:06.188 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [irreverent_pike] - revision: 3ee5bf1d17
+May-27 17:39:06.213 [main] WARN  nextflow.config.ConfigValidator - Unrecognized config option 'docker.autoMount'
+May-27 17:39:06.214 [main] WARN  nextflow.config.ConfigValidator - Unrecognized config option 'process.env.GEMINI_API_KEY'
+May-27 17:39:06.269 [main] DEBUG nextflow.Session - Session UUID: 6ed11447-1629-48a7-a1de-157f6679fc5a
+May-27 17:39:06.269 [main] DEBUG nextflow.Session - Run name: irreverent_pike
+May-27 17:39:06.270 [main] DEBUG nextflow.Session - Executor pool size: 8
+May-27 17:39:06.278 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+May-27 17:39:06.285 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+May-27 17:39:06.319 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 26.04.2 build 12216
+  Created: 21-05-2026 21:22 UTC (17:22 EDT)
+  System: Linux 6.6.114.1-microsoft-standard-WSL2
+  Runtime: Groovy 4.0.31 on OpenJDK 64-Bit Server VM 25.0.3-ea+7-Ubuntu-2
+  Encoding: UTF-8 (UTF-8)
+  Process: 1021@AnoushLaptop [127.0.1.1]
+  CPUs: 8 - Mem: 7.5 GB (6.7 GB) - Swap: 2 GB (2 GB)
+May-27 17:39:06.348 [main] DEBUG nextflow.Session - Work-dir: /home/anoush/admet-report-generator/work [ext2/ext3]
+May-27 17:39:06.391 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+May-27 17:39:06.401 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+May-27 17:39:06.403 [main] DEBUG nextflow.Session - Observer factory (v2): DefaultObserverFactory
+May-27 17:39:06.431 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+May-27 17:39:06.444 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 9; maxThreads: 1000
+May-27 17:39:06.532 [main] DEBUG nextflow.Session - Session start
+May-27 17:39:06.544 [main] DEBUG nextflow.script.ScriptLoaderFactory - Using script parser v2
+May-27 17:39:06.788 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+May-27 17:39:06.923 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-27 17:39:06.924 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-27 17:39:06.933 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+May-27 17:39:06.943 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=8; memory=7.5 GB; capacity=8; pollInterval=100ms; dumpInterval=5m
+May-27 17:39:06.947 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+May-27 17:39:06.996 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'FETCH': maxForks=0; fair=false; array=0
+May-27 17:39:07.041 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-27 17:39:07.041 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-27 17:39:07.042 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'FEATURIZE': maxForks=0; fair=false; array=0
+May-27 17:39:07.045 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-27 17:39:07.045 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-27 17:39:07.046 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'PREDICT': maxForks=0; fair=false; array=0
+May-27 17:39:07.048 [main] DEBUG n.script.dsl.ProcessConfigBuilder - Config settings `withName:NARRATE` matches process NARRATE
+May-27 17:39:07.049 [main] WARN  n.script.dsl.ProcessConfigBuilder - Unknown directive `env` for process `NARRATE`
+May-27 17:39:07.051 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-27 17:39:07.051 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-27 17:39:07.051 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'NARRATE': maxForks=0; fair=false; array=0
+May-27 17:39:07.054 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-27 17:39:07.054 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-27 17:39:07.055 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'REPORT': maxForks=0; fair=false; array=0
+May-27 17:39:07.077 [main] DEBUG nextflow.Session - Process names: FETCH, FEATURIZE, PREDICT, NARRATE, REPORT
+May-27 17:39:07.080 [main] DEBUG nextflow.Session - Igniting dataflow network (11)
+May-27 17:39:07.089 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > FETCH
+May-27 17:39:07.091 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > FEATURIZE
+May-27 17:39:07.093 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > PREDICT
+May-27 17:39:07.095 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NARRATE
+May-27 17:39:07.098 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > REPORT
+May-27 17:39:07.098 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Main: /home/anoush/admet-report-generator/main.nf
+May-27 17:39:07.098 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+May-27 17:39:07.098 [main] DEBUG nextflow.Session - Session await
+May-27 17:39:07.227 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-27 17:39:07.232 [Task submitter] INFO  nextflow.Session - [44/f986a6] Submitted process > FETCH (1)
+May-27 17:39:07.359 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: FETCH (1); status: COMPLETED; exit: 1; error: -; workDir: /home/anoush/admet-report-generator/work/44/f986a65fa991a68d04341651fb6878]
+May-27 17:39:07.360 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+May-27 17:39:07.367 [TaskFinalizer-1] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=FETCH (1); work-dir=/home/anoush/admet-report-generator/work/44/f986a65fa991a68d04341651fb6878
+  error [nextflow.exception.ProcessFailedException]: Process `FETCH (1)` terminated with an error exit status (1)
+May-27 17:39:07.380 [TaskFinalizer-1] ERROR nextflow.processor.TaskProcessor - Error executing process > 'FETCH (1)'
+
+Caused by:
+  Process `FETCH (1)` terminated with an error exit status (1)
+
+
+Command executed:
+
+  pip install --quiet --no-cache-dir pandas chembl-webresource-client
+  mkdir -p data
+  python bin/fetch.py
+
+Command exit status:
+  1
+
+Command output:
+  
+  The command 'docker' could not be found in this WSL 2 distro.
+  We recommend to activate the WSL integration in Docker Desktop settings.
+  
+  For details about using Docker Desktop with WSL 2, visit:
+  
+  https://docs.docker.com/go/wsl2/
+
+Command error:
+  
+  The command 'docker' could not be found in this WSL 2 distro.
+  We recommend to activate the WSL integration in Docker Desktop settings.
+  
+  For details about using Docker Desktop with WSL 2, visit:
+  
+  https://docs.docker.com/go/wsl2/
+
+Work dir:
+  /home/anoush/admet-report-generator/work/44/f986a65fa991a68d04341651fb6878
+
+Container:
+  python:3.11
+
+Tip: you can try to figure out what's wrong by changing to the process work dir and showing the script file named `.command.sh`
+May-27 17:39:07.386 [TaskFinalizer-1] DEBUG nextflow.Session - Session aborted -- Cause: Process `FETCH (1)` terminated with an error exit status (1)
+May-27 17:39:07.390 [main] DEBUG nextflow.Session - Session await > all processes finished
+May-27 17:39:07.398 [TaskFinalizer-1] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=1; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=0ms; failedDuration=104ms; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=1; peakCpus=1; peakMemory=0; ]
+May-27 17:39:07.437 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+May-27 17:39:07.437 [main] DEBUG nextflow.Session - Session await > all barriers passed
+May-27 17:39:07.439 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=1; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=0ms; failedDuration=104ms; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=1; peakCpus=1; peakMemory=0; ]
+May-27 17:39:07.439 [TaskFinalizer-1] DEBUG nextflow.Session - null
+java.lang.InterruptedException
+	at java.base/java.lang.Object.wait0(Native Method)
+	at java.base/java.lang.Object.wait(Object.java:389)
+	at java.base/java.lang.Thread.join(Thread.java:1887)
+	at java.base/java.lang.Thread.join(Thread.java:1963)
+	at nextflow.trace.AnsiLogObserver.onFlowComplete(AnsiLogObserver.groovy:559)
+	at nextflow.Session$_notifyFlowComplete_lambda38.doCall(Session.groovy:1093)
+	at nextflow.Session.notifyEvent(Session.groovy:1123)
+	at nextflow.Session.notifyFlowComplete(Session.groovy:1093)
+	at nextflow.Session.shutdown0(Session.groovy:775)
+	at nextflow.Session.abort(Session.groovy:830)
+	at nextflow.Session.fault(Session.groovy:792)
+	at nextflow.processor.TaskPollingMonitor.finalizeTask(TaskPollingMonitor.groovy:753)
+	at nextflow.processor.TaskPollingMonitor.safeFinalizeTask(TaskPollingMonitor.groovy:736)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:343)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:328)
+	at groovy.lang.MetaClassImpl.doInvokeMethod(MetaClassImpl.java:1341)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1096)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1009)
+	at org.codehaus.groovy.runtime.InvokerHelper.invokePogoMethod(InvokerHelper.java:645)
+	at org.codehaus.groovy.runtime.InvokerHelper.invokeMethod(InvokerHelper.java:628)
+	at org.codehaus.groovy.runtime.InvokerHelper.invokeMethodSafe(InvokerHelper.java:82)
+	at nextflow.processor.TaskPollingMonitor$_checkTaskStatus_lambda8.doCall(TaskPollingMonitor.groovy:726)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:545)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+May-27 17:39:07.617 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+May-27 17:39:07.641 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

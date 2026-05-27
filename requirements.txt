@@ -1,0 +1,9 @@
+pandas
+numpy
+rdkit
+chembl-webresource-client
+admet-ai
+plotly
+jinja2
+scipy
+google-generativeai

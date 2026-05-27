@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ADMET Drug Candidate Report</title>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #edf1f7;
+      color: #1a2340;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, #0a1628 0%, #162850 100%);
+      color: #fff;
+      padding: 36px 48px 30px;
+      border-bottom: 4px solid #2161c8;
+    }
+    header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    header p {
+      margin-top: 6px;
+      color: #8faad4;
+      font-size: 14px;
+    }
+    .header-meta {
+      display: flex;
+      gap: 32px;
+      margin-top: 18px;
+    }
+    .meta-chip {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      color: #c8d8f0;
+    }
+
+    /* ── Layout ─────────────────────────────────────────────── */
+    main {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+    section { margin-bottom: 48px; }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0a1628;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #2161c8;
+    }
+
+    /* ── Summary table ───────────────────────────────────────── */
+    .summary-table-wrap { overflow-x: auto; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    thead { background: #0a1628; color: #fff; }
+    thead th {
+      padding: 11px 14px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+    tbody tr:nth-child(even) { background: #f7f9fc; }
+    tbody tr:hover { background: #edf3ff; }
+    tbody td { padding: 9px 14px; border-bottom: 1px solid #e8ecf3; font-size: 13px; }
+    td.rank { font-weight: 700; color: #2161c8; width: 42px; }
+    td.drug-name { font-weight: 600; }
+    td.chembl { color: #5a6a8a; font-size: 12px; }
+
+    .score-bar-cell { min-width: 110px; }
+    .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .score-bar-bg {
+      flex: 1;
+      background: #e8ecf3;
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #2161c8, #4a9fd4);
+    }
+    .score-val { font-size: 12px; font-weight: 700; color: #2161c8; width: 36px; }
+
+    /* ── Risk chips in summary ───────────────────────────────── */
+    .chip {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .chip.green  { background: #d4f5e2; color: #1a7a45; }
+    .chip.yellow { background: #fef3cd; color: #8a6000; }
+    .chip.red    { background: #fde8e8; color: #b32020; }
+    .chip.na     { background: #ebebeb; color: #888; }
+
+    /* ── Compound card ───────────────────────────────────────── */
+    .compound-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      overflow: hidden;
+      margin-bottom: 36px;
+    }
+    .card-header {
+      background: linear-gradient(90deg, #0a1628, #1a3562);
+      color: #fff;
+      padding: 18px 28px;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+    .card-header h2 { font-size: 18px; font-weight: 700; }
+    .card-header .chembl-badge {
+      background: rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 12px;
+      color: #a0c0e8;
+    }
+    .card-header .score-badge {
+      margin-left: auto;
+      background: #2161c8;
+      border-radius: 8px;
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .card-body {
+      padding: 24px 28px;
+    }
+
+    /* ── Two-column: chart + risk table ─────────────────────── */
+    .card-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 800px) {
+      .card-cols { grid-template-columns: 1fr; }
+    }
+
+    .chart-wrap {
+      border: 1px solid #e8ecf3;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    /* ── Risk table ──────────────────────────────────────────── */
+    .risk-table { width: 100%; border-collapse: collapse; }
+    .risk-table th {
+      background: #f0f4f8;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #5a6a8a;
+      text-align: left;
+      border-bottom: 1px solid #e0e6ef;
+    }
+    .risk-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #f0f4f8;
+      font-size: 13px;
+    }
+    .risk-table tr:last-child td { border-bottom: none; }
+    .risk-table .prop-name { font-weight: 600; color: #1a2340; }
+    .risk-table .prop-value { color: #5a6a8a; font-size: 12px; font-family: monospace; }
+
+    .risk-pill {
+      display: inline-block;
+      padding: 3px 11px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .risk-pill.green  { background: #d4f5e2; color: #1a7a45; }
+    .risk-pill.yellow { background: #fef3cd; color: #8a6000; }
+    .risk-pill.red    { background: #fde8e8; color: #b32020; }
+    .risk-pill.na     { background: #ebebeb; color: #888; }
+
+    /* ── Gemini memo ─────────────────────────────────────────── */
+    .memo-section { margin-top: 4px; }
+    .memo-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #5a6a8a;
+      margin-bottom: 8px;
+    }
+    blockquote.gemini-memo {
+      background: #f7f9ff;
+      border-left: 4px solid #2161c8;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 20px;
+      color: #2a3a5c;
+      font-size: 14px;
+      line-height: 1.75;
+      font-style: italic;
+    }
+    .memo-missing {
+      color: #aaa;
+      font-style: italic;
+      font-size: 13px;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #8a96aa;
+      border-top: 1px solid #dde3ed;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>ADMET Drug Candidate Report</h1>
+  <p>Computational pharmacokinetic and toxicity profiling of FDA-approved small molecules</p>
+  <div class="header-meta">
+    <span class="meta-chip">{{ total }} compounds</span>
+    <span class="meta-chip">Source: ChEMBL + ADMET-AI + Gemini 1.5 Flash</span>
+    <span class="meta-chip">Endpoints: HIA · BBB · CYP3A4 · hERG · DILI · Caco-2</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── Summary Table ──────────────────────────────────────────────── -->
+  <section id="summary">
+    <h2 class="section-title">Compound Rankings by Overall ADMET Score</h2>
+    <div class="summary-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Drug Name</th>
+            <th>ChEMBL ID</th>
+            <th>Score</th>
+            {% for col in admet_cols %}
+            <th>{{ radar_labels[col] }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in summary_rows %}
+          <tr>
+            <td class="rank">{{ row.rank }}</td>
+            <td class="drug-name">
+              <a href="#{{ row.chembl_id }}" style="color:#2161c8;text-decoration:none;">
+                {{ row.name }}
+              </a>
+            </td>
+            <td class="chembl">{{ row.chembl_id }}</td>
+            <td class="score-bar-cell">
+              <div class="score-bar-wrap">
+                <div class="score-bar-bg">
+                  <div class="score-bar-fill" style="width:{{ row.score_pct }}%"></div>
+                </div>
+                <span class="score-val">{{ row.score }}</span>
+              </div>
+            </td>
+            {% for col in admet_cols %}
+            <td><span class="chip {{ row.cells[col].cls }}">{{ row.cells[col].value }}</span></td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── Per-compound cards ─────────────────────────────────────────── -->
+  <section id="compounds">
+    <h2 class="section-title">Compound Profiles</h2>
+
+    {% for cpd in compounds %}
+    <div class="compound-card" id="{{ cpd.chembl_id }}">
+
+      <div class="card-header">
+        <h2>{{ cpd.name }}</h2>
+        <span class="chembl-badge">{{ cpd.chembl_id }}</span>
+        <span class="score-badge">Score {{ cpd.score }}</span>
+      </div>
+
+      <div class="card-body">
+        <div class="card-cols">
+
+          <!-- Radar chart -->
+          <div class="chart-wrap">
+            {{ cpd.chart_html | safe }}
+          </div>
+
+          <!-- Risk table -->
+          <div>
+            <table class="risk-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Value</th>
+                  <th>Assessment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in cpd.risk_rows %}
+                <tr>
+                  <td class="prop-name">{{ r.property }}</td>
+                  <td class="prop-value">{{ r.value }}</td>
+                  <td><span class="risk-pill {{ r.cls }}">{{ r.label }}</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /card-cols -->
+
+        <!-- Gemini memo -->
+        <div class="memo-section">
+          <div class="memo-label">AI-Generated Drug Candidate Assessment</div>
+          {% if cpd.memo %}
+          <blockquote class="gemini-memo">{{ cpd.memo }}</blockquote>
+          {% else %}
+          <p class="memo-missing">No memo available for this compound.</p>
+          {% endif %}
+        </div>
+
+      </div><!-- /card-body -->
+    </div><!-- /compound-card -->
+    {% endfor %}
+
+  </section>
+
+</main>
+
+<footer>
+  Generated by admet-report-generator &nbsp;·&nbsp;
+  ChEMBL v34 &nbsp;·&nbsp; ADMET-AI &nbsp;·&nbsp; Gemini 1.5 Flash
+</footer>
+
+</body>
+</html>
