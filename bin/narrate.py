@@ -57,9 +57,10 @@ def build_prompt(name: str, admet: dict) -> str:
     """).strip()
 
 
-def call_gemini(model, prompt: str) -> str:
-    response = model.generate_content(prompt)
-    return response.text.strip()
+def call_gemini(client, prompt: str) -> str:
+    response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+    memo = response.text
+    return memo.strip()
 
 
 def init_gemini():
@@ -72,11 +73,10 @@ def init_gemini():
         )
         sys.exit(1)
 
-    import google.generativeai as genai
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    print("Gemini client initialised (gemini-1.5-flash).\n")
-    return model
+    from google import genai
+    client = genai.Client(api_key=api_key)
+    print("Gemini client initialised (gemini-2.0-flash).\n")
+    return client
 
 
 def main():
@@ -92,7 +92,7 @@ def main():
     if missing:
         print(f"[WARN] ADMET columns not found in input, will be N/A: {missing}")
 
-    model = init_gemini()
+    client = init_gemini()
 
     memos = []
     errors = 0
@@ -105,7 +105,7 @@ def main():
 
         try:
             prompt = build_prompt(name, admet)
-            memo   = call_gemini(model, prompt)
+            memo   = call_gemini(client, prompt)
             memos.append(memo)
             # Print a truncated preview so progress is meaningful.
             preview = memo[:80].replace("\n", " ")
