@@ -20,7 +20,7 @@ may show nanomolar activity against its target in a biochemical assay, yet be
 useless as a drug because it is not absorbed orally, is rapidly metabolised by
 CYP3A4, accumulates in the brain unexpectedly, or blocks the hERG cardiac
 channel at therapeutic concentrations. Historically, roughly **90% of drug
-candidates that enter clinical trials fail**, and ADMET-related issues account
+candidates that enter clinical trials fail**, and ADMET related issues account
 for a substantial share of those failures, a proportion that remains stubbornly
 high despite decades of medicinal chemistry knowledge.
 
@@ -29,7 +29,7 @@ advent of large curated datasets (ChEMBL, TDC) and graph neural network models
 trained on them. Tools like ADMET-AI can now return probability scores for
 human intestinal absorption, BBB penetration, CYP3A4 substrate likelihood,
 hERG inhibition, and drug-induced liver injury within seconds of receiving a
-SMILES string. What these tools produce, however, are **raw numerical scores** —
+SMILES string. What these tools produce, however, are **raw numerical scores** ,
 useful to an expert, but not easily actionable for a broader audience or for
 rapid triage across a large compound set.
 
