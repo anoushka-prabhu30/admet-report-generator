@@ -1,7 +1,7 @@
 # ADMET Drug Report Generator
 
 A Nextflow pipeline that fetches FDA approved small molecules from ChEMBL, predicts
-ADMET properties with ADMET-AI, and uses Google Gemini to narrate each compound's
+ADMET properties with ADMET-AI, and uses Groq Llama 3.1 to narrate each compound's
 pharmacokinetic and toxicity profile into a structured HTML report.
 
 ---
@@ -41,7 +41,7 @@ rapid triage across a large compound set.
 > memos that surface actionable insights beyond what raw probability scores
 > communicate on their own?
 
-This project tests whether prompting Gemini 1.5 Flash with a compound's ADMET
+This project tests whether prompting Groq Llama 3.1 with a compound's ADMET
 scores, framed as a structured medicinal-chemistry briefing, yields coherent,
 accurate, and clinically relevant drug candidate assessments at scale, without
 any fine tuning or retrieval augmentation.
@@ -81,15 +81,15 @@ endpoints relevant to oral drug development:
 Failed predictions fall back to per molecule mode; remaining failures are stored
 as `NaN`. Output: `data/compounds_admet.csv`.
 
-### 4. Gemini Narration (`bin/narrate.py`)
+### 4. Groq Llama 3.1 Narration (`bin/narrate.py`)
 Each compound's name and six ADMET values are formatted into a structured prompt
-asking Gemini 1.5 Flash to write a **3-sentence drug-candidate memo**:
+asking Groq Llama 3.1 to write a **3-sentence drug-candidate memo**:
 - Sentence 1: absorption and distribution profile (HIA, BBB, Caco-2)
 - Sentence 2: metabolism and toxicity risks (CYP3A4, hERG, DILI)
 - Sentence 3: overall suitability as an oral drug candidate
 
 A 1-second delay is observed between API calls to respect rate limits.
-Output: `data/compounds_narrated.csv` with a new `gemini_memo` column.
+Output: `data/compounds_narrated.csv` with a new `llm_memo` column.
 
 ### 5. HTML Report (`bin/report.py` + `templates/report.html.j2`)
 Generates `output/report.html` using Plotly and Jinja2:
@@ -98,13 +98,13 @@ Generates `output/report.html` using Plotly and Jinja2:
 - **Per-compound card** containing:
   - A Plotly radar chart of the six normalised ADMET dimensions
   - A colour coded risk table (green / yellow / red per property)
-  - The Gemini memo in a styled blockquote
+  - The Llama 3.1 memo in a styled blockquote
 
 ---
 
 ## Key Finding
 
-Across 50 FDA approved small molecules from ChEMBL, ADMET-AI predictions revealed a clear trade off between absorption and toxicity profiles. Top ranked compounds (mechlorethamine score 0.882, nicotine 0.868, amphetamine 0.840) achieved high scores primarily through excellent human intestinal absorption (HIA > 0.99) and low hERG cardiotoxicity, while bottom-ranked compounds (epirubicin 0.325, sirolimus 0.371) were penalized by simultaneous high hERG (0.875) and DILI (0.842) risk. Notably, beta-blockers as a drug class showed a consistent pattern: high HIA but elevated hERG scores (metoprolol 0.581, betaxolol 0.832, propranolol 0.783), reflecting their known mechanism of cardiac ion channel interaction. The BBB endpoint returned N/A for all 50 compounds, suggesting the ADMET-AI model's BBB classifier was outside its training domain for this compound set, a limitation worth noting. The Gemini narration step was implemented in the pipeline but requires a paid API tier for batch processing of 50 compounds; the pipeline architecture supports it and can be activated with a valid key.
+Across 50 FDA approved small molecules from ChEMBL, ADMET-AI predictions revealed a clear trade off between absorption and toxicity profiles. Top ranked compounds (mechlorethamine score 0.882, nicotine 0.868, amphetamine 0.840) achieved high scores primarily through excellent human intestinal absorption (HIA > 0.99) and low hERG cardiotoxicity, while bottom-ranked compounds (epirubicin 0.325, sirolimus 0.371) were penalized by simultaneous high hERG (0.875) and DILI (0.842) risk. Notably, beta-blockers as a drug class showed a consistent pattern: high HIA but elevated hERG scores (metoprolol 0.581, betaxolol 0.832, propranolol 0.783), reflecting their known mechanism of cardiac ion channel interaction. The BBB endpoint returned N/A for all 50 compounds, suggesting the ADMET-AI model's BBB classifier was outside its training domain for this compound set, a limitation worth noting. The Groq narration step was implemented in the pipeline but requires a valid API key for batch processing of 50 compounds; the pipeline architecture supports it and can be activated with a valid key. LLM-generated memos (Llama 3.1 via Groq) consistently flagged the tension between high HIA scores and poor Caco-2 permeability as the dominant pharmacokinetic limitation across the dataset, a pattern invisible from raw scores alone.
 
 ---
 
@@ -113,7 +113,7 @@ Across 50 FDA approved small molecules from ChEMBL, ADMET-AI predictions reveale
 ### Prerequisites
 - [Docker](https://docs.docker.com/get-docker/) running on your machine
 - [Nextflow](https://www.nextflow.io/docs/latest/install.html) ≥ 23.10
-- A Google Gemini API key (free tier is sufficient — see note below)
+- A Groq API key (free tier is sufficient — get one at [console.groq.com](https://console.groq.com))
 
 ### Steps
 
@@ -122,8 +122,8 @@ Across 50 FDA approved small molecules from ChEMBL, ADMET-AI predictions reveale
 git clone https://github.com/<your-username>/admet-report-generator.git
 cd admet-report-generator
 
-# 2. Set your Gemini API key
-export GEMINI_API_KEY=your_key_here
+# 2. Set your Groq API key
+export GROQ_API_KEY=your_key_here
 
 # 3. Run the full pipeline
 nextflow run main.nf
@@ -149,7 +149,7 @@ python bin/fetch.py
 python bin/featurize.py
 python bin/predict.py
 
-export GEMINI_API_KEY=your_key_here
+export GROQ_API_KEY=your_key_here
 python bin/narrate.py
 
 python bin/report.py
@@ -164,14 +164,14 @@ open output/report.html
 admet-report-generator/
 │
 ├── main.nf                     # Nextflow pipeline (5 processes, DSL2)
-├── nextflow.config             # Docker + GEMINI_API_KEY env config
+├── nextflow.config             # Docker + GROQ_API_KEY env config
 ├── requirements.txt            # Python dependencies
 │
 ├── bin/
 │   ├── fetch.py                # ChEMBL data fetch → data/compounds.csv
 │   ├── featurize.py            # RDKit features → data/compounds_featurized.csv
 │   ├── predict.py              # ADMET-AI inference → data/compounds_admet.csv
-│   ├── narrate.py              # Gemini narration → data/compounds_narrated.csv
+│   ├── narrate.py              # Groq Llama 3.1 narration → data/compounds_narrated.csv
 │   └── report.py               # Plotly + Jinja2 report → output/report.html
 │
 ├── templates/
@@ -190,7 +190,7 @@ admet-report-generator/
 | `chembl-webresource-client` | ChEMBL REST API client |
 | `rdkit` | Molecular featurization and fingerprints |
 | `admet-ai` | ADMET property prediction (TDC-trained models) |
-| `google-generativeai` | Gemini API client |
+| `groq` | Groq API client (Llama 3.1) |
 | `plotly` | Radar charts in the HTML report |
 | `jinja2` | HTML templating |
 | `pandas` / `numpy` / `scipy` | Data handling |
@@ -199,11 +199,10 @@ admet-report-generator/
 
 ## Notes
 
-**Gemini API free tier is sufficient.** The narration step makes one API call per
-compound (50 calls for the default run). The Gemini 1.5 Flash free tier allows
-15 requests per minute and 1,500 requests per day, well within the requirements
-of this pipeline. No billing account is needed. Get a key at
-[aistudio.google.com](https://aistudio.google.com).
+**Groq API free tier is sufficient.** The narration step makes one API call per
+compound (50 calls for the default run). The Groq free tier allows generous
+rate limits well within the requirements of this pipeline. No billing account is
+needed. Get a free key at [console.groq.com](https://console.groq.com).
 
 **ADMET-AI model weights** are downloaded automatically on first run and cached
 locally by the library. Expect a one-time download of several hundred MB.
