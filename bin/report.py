@@ -1,6 +1,6 @@
 """
 Generate output/report.html from data/compounds_narrated.csv.
-Each compound gets a Plotly radar chart, a colour-coded risk table, and a Gemini memo.
+Each compound gets a Plotly radar chart, a colour-coded risk table, and a Groq memo.
 A summary table at the top ranks all compounds by overall ADMET score.
 """
 
