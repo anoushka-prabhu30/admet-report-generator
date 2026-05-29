@@ -232,7 +232,7 @@ def main():
         ]
 
         score = row.get("admet_score")
-        memo  = row.get("gemini_memo", "")
+        memo  = row.get("groq_memo", "")
 
         compounds_data.append({
             "name":       name,
