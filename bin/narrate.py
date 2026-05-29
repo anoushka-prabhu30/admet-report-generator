@@ -1,7 +1,7 @@
 """
-Generate a 3-sentence drug-candidate memo for each compound using Google Gemini.
+Generate a 3-sentence drug-candidate memo for each compound using Groq.
 Reads  data/compounds_admet.csv
-Writes data/compounds_narrated.csv  (original columns + 'gemini_memo')
+Writes data/compounds_narrated.csv  (original columns + 'groq_memo')
 """
 
 import os
@@ -57,25 +57,28 @@ def build_prompt(name: str, admet: dict) -> str:
     """).strip()
 
 
-def call_gemini(client, prompt: str) -> str:
-    response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
-    memo = response.text
+def call_groq(client, prompt: str) -> str:
+    response = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[{"role": "user", "content": prompt}],
+    )
+    memo = response.choices[0].message.content
     return memo.strip()
 
 
-def init_gemini():
-    api_key = os.environ.get("GEMINI_API_KEY")
+def init_groq():
+    api_key = os.environ.get("GROQ_API_KEY")
     if not api_key:
         print(
-            "Error: GEMINI_API_KEY environment variable is not set.\n"
-            "Export it before running:  export GEMINI_API_KEY=your_key_here",
+            "Error: GROQ_API_KEY environment variable is not set.\n"
+            "Export it before running:  export GROQ_API_KEY=your_key_here",
             file=sys.stderr,
         )
         sys.exit(1)
 
-    from google import genai
-    client = genai.Client(api_key=api_key)
-    print("Gemini client initialised (gemini-2.0-flash).\n")
+    from groq import Groq
+    client = Groq(api_key=api_key)
+    print("Groq client initialised (llama-3.1-8b-instant).\n")
     return client
 
 
@@ -92,7 +95,7 @@ def main():
     if missing:
         print(f"[WARN] ADMET columns not found in input, will be N/A: {missing}")
 
-    client = init_gemini()
+    client = init_groq()
 
     memos = []
     errors = 0
@@ -105,7 +108,7 @@ def main():
 
         try:
             prompt = build_prompt(name, admet)
-            memo   = call_gemini(client, prompt)
+            memo   = call_groq(client, prompt)
             memos.append(memo)
             # Print a truncated preview so progress is meaningful.
             preview = memo[:80].replace("\n", " ")
@@ -118,9 +121,9 @@ def main():
         if i < len(df) - 1:
             time.sleep(RATE_LIMIT_DELAY)
 
-    df["gemini_memo"] = memos
+    df["groq_memo"] = memos
 
-    succeeded = df["gemini_memo"].notna().sum()
+    succeeded = df["groq_memo"].notna().sum()
     print(f"\nMemos generated: {succeeded}/{len(df)}  |  Errors: {errors}")
 
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
